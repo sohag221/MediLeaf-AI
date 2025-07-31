@@ -1,6 +1,7 @@
 // DOM Elements
 const uploadArea = document.getElementById('uploadArea');
 const imageInput = document.getElementById('imageInput');
+const uploadBtn = document.getElementById('uploadBtn');
 const imagePreviewContainer = document.getElementById('imagePreviewContainer');
 const previewImage = document.getElementById('previewImage');
 const imageFileName = document.getElementById('imageFileName');
@@ -29,6 +30,28 @@ const navLinks = document.querySelectorAll('.nav-link');
 
 // Global variable to store selected file
 let selectedFile = null;
+
+// Initialize the application
+function initializeApp() {
+    console.log('Initializing MediLeaf AI application');
+    
+    // Ensure the upload area is visible and other containers are hidden
+    if (uploadArea) uploadArea.style.display = 'block';
+    if (imagePreviewContainer) imagePreviewContainer.style.display = 'none';
+    if (predictionContainer) predictionContainer.style.display = 'none';
+    if (loading) loading.style.display = 'none';
+    
+    // Clear any existing file input value
+    if (imageInput) {
+        imageInput.value = '';
+        imageInput.setAttribute('accept', 'image/*');
+    }
+    
+    console.log('Application initialized successfully');
+}
+
+// Call initialization when DOM is loaded
+document.addEventListener('DOMContentLoaded', initializeApp);
 
 // Feature scripts data
 const featureScripts = {
@@ -88,9 +111,24 @@ window.addEventListener('scroll', () => {
 });
 
 // File upload handling
-uploadArea.addEventListener('click', () => {
-    imageInput.click();
+uploadArea.addEventListener('click', (e) => {
+    // Only trigger if clicking the area itself, not the button
+    if (e.target === uploadArea || e.target.closest('.upload-content') && !e.target.closest('.upload-btn')) {
+        imageInput.value = '';
+        imageInput.click();
+    }
 });
+
+// Upload button specific handler
+if (uploadBtn) {
+    uploadBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Upload button clicked'); // Debug log
+        imageInput.value = '';
+        imageInput.click();
+    });
+}
 
 uploadArea.addEventListener('dragover', (e) => {
     e.preventDefault();
@@ -112,13 +150,24 @@ uploadArea.addEventListener('drop', (e) => {
 });
 
 imageInput.addEventListener('change', (e) => {
-    if (e.target.files.length > 0) {
+    console.log('Input change event fired', e.target.files.length); // Debug log
+    if (e.target.files && e.target.files.length > 0) {
+        handleFileSelection(e.target.files[0]);
+    }
+});
+
+// Additional safety check for input
+imageInput.addEventListener('input', (e) => {
+    console.log('Input event fired', e.target.files.length); // Debug log
+    if (e.target.files && e.target.files.length > 0) {
         handleFileSelection(e.target.files[0]);
     }
 });
 
 // Handle file selection (show preview, don't process yet)
 function handleFileSelection(file) {
+    console.log('File selected:', file.name, file.type, file.size); // Debug log
+    
     // Validate file type
     if (!file.type.startsWith('image/')) {
         alert('Please select a valid image file.');
@@ -145,6 +194,12 @@ function handleFileSelection(file) {
         imagePreviewContainer.style.display = 'block';
         predictionContainer.style.display = 'none';
         loading.style.display = 'none';
+        
+        console.log('Image preview loaded successfully'); // Debug log
+    };
+    reader.onerror = (e) => {
+        console.error('Error reading file:', e);
+        alert('Error reading the selected file. Please try again.');
     };
     reader.readAsDataURL(file);
 }
@@ -213,12 +268,17 @@ function processImage(file) {
 
 // Reset to initial upload state
 function resetToUploadState() {
+    console.log('Resetting to upload state'); // Debug log
     uploadArea.style.display = 'block';
     imagePreviewContainer.style.display = 'none';
     predictionContainer.style.display = 'none';
     loading.style.display = 'none';
     selectedFile = null;
+    
+    // Clear the input value and force a reset
     imageInput.value = '';
+    imageInput.type = 'text';
+    imageInput.type = 'file';
 }
 
 // Display prediction results
