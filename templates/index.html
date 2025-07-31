@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicinal Plant Classifier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-leaf"></i>
+                    <h1>MediLeaf AI</h1>
+                </div>
+                <nav class="nav">
+                    <a href="#home" class="nav-link active">Home</a>
+                    <a href="#classifier" class="nav-link">Classifier</a>
+                    <a href="#plants" class="nav-link">Plants</a>
+                    <a href="#about" class="nav-link">About</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h2>Discover the Power of Medicinal Plants</h2>
+                    <p>Upload a photo of a medicinal plant leaf and let our AI identify it along with its therapeutic properties.</p>
+                    <a href="#classifier" class="cta-button">
+                        <i class="fas fa-camera"></i>
+                        Start Classification
+                    </a>
+                </div>
+                <div class="hero-image">
+                    <div class="floating-card">
+                        <i class="fas fa-microscope"></i>
+                        <h3>AI-Powered</h3>
+                        <p>Advanced deep learning model</p>
+                    </div>
+                    <div class="floating-card">
+                        <i class="fas fa-leaf"></i>
+                        <h3>10 Plant Types</h3>
+                        <p>Comprehensive database</p>
+                    </div>
+                    <div class="floating-card">
+                        <i class="fas fa-heartbeat"></i>
+                        <h3>Medicinal Uses</h3>
+                        <p>Detailed therapeutic information</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Classifier Section -->
+    <section id="classifier" class="classifier-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Plant Leaf Classifier</h2>
+                <p>Upload an image of a medicinal plant leaf for instant identification</p>
+            </div>
+            
+            <div class="classifier-container">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-content">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <h3>Drop your image here</h3>
+                        <p>or click to browse</p>
+                        <input type="file" id="imageInput" accept="image/*" hidden>
+                        <button class="upload-btn" onclick="document.getElementById('imageInput').click()">
+                            Choose File
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="prediction-container" id="predictionContainer" style="display: none;">
+                    <div class="uploaded-image">
+                        <img id="uploadedImage" alt="Uploaded image">
+                    </div>
+                    
+                    <div class="prediction-results">
+                        <div class="main-prediction">
+                            <h3 id="predictedClass"></h3>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" id="confidenceFill"></div>
+                                <span class="confidence-text" id="confidenceText"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="medicinal-uses">
+                            <h4><i class="fas fa-pills"></i> Medicinal Uses</h4>
+                            <ul id="medicinalUsesList"></ul>
+                        </div>
+                        
+                        <div class="top-predictions">
+                            <h4><i class="fas fa-chart-bar"></i> Alternative Predictions</h4>
+                            <div id="topPredictionsList"></div>
+                        </div>
+                        
+                        <button class="try-again-btn" onclick="resetClassifier()">
+                            <i class="fas fa-redo"></i>
+                            Try Another Image
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="loading" id="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Analyzing your image...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Plants Database Section -->
+    <section id="plants" class="plants-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Medicinal Plants Database</h2>
+                <p>Explore our comprehensive collection of medicinal plants</p>
+            </div>
+            
+            <div class="plants-grid">
+                <div class="plant-card" data-plant="Bhibitaki">
+                    <div class="plant-icon">🌿</div>
+                    <h3>Bhibitaki</h3>
+                    <p>Digestive health and respiratory support</p>
+                </div>
+                
+                <div class="plant-card" data-plant="Candelabra plant">
+                    <div class="plant-icon">🕯️</div>
+                    <h3>Candelabra Plant</h3>
+                    <p>Skin conditions and inflammation relief</p>
+                </div>
+                
+                <div class="plant-card" data-plant="Chebulic Myrobalan">
+                    <div class="plant-icon">🟤</div>
+                    <h3>Chebulic Myrobalan</h3>
+                    <p>Antioxidant and anti-aging properties</p>
+                </div>
+                
+                <div class="plant-card" data-plant="Gotu Kola">
+                    <div class="plant-icon">🧠</div>
+                    <h3>Gotu Kola</h3>
+                    <p>Brain function and memory enhancement</p>
+                </div>
+                
+                <div class="plant-card" data-plant="Holy Basil">
+                    <div class="plant-icon">🌱</div>
+                    <h3>Holy Basil</h3>
+                    <p>Stress reduction and immune support</p>
+                </div>
+                
+                <div class="plant-card" data-plant="Indian Borage">
+                    <div class="plant-icon">🌿</div>
+                    <h3>Indian Borage</h3>
+                    <p>Respiratory health and wound healing</p>
+                </div>
+                
+                <div class="plant-card" data-plant="Lemongrass">
+                    <div class="plant-icon">🌾</div>
+                    <h3>Lemongrass</h3>
+                    <p>Digestive health and stress relief</p>
+                </div>
+                
+                <div class="plant-card" data-plant="Longevity Spinach">
+                    <div class="plant-icon">🥬</div>
+                    <h3>Longevity Spinach</h3>
+                    <p>Anti-aging and blood sugar regulation</p>
+                </div>
+                
+                <div class="plant-card" data-plant="Madagascar Periwinkle">
+                    <div class="plant-icon">🌺</div>
+                    <h3>Madagascar Periwinkle</h3>
+                    <p>Diabetes management and cancer support</p>
+                </div>
+                
+                <div class="plant-card" data-plant="Neem Tree">
+                    <div class="plant-icon">🌳</div>
+                    <h3>Neem Tree</h3>
+                    <p>Skin health and antimicrobial properties</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2>About MediLeaf AI</h2>
+                    <p>Our advanced EfficientNetB3 deep learning model has been trained on thousands of medicinal plant images to provide accurate identification and comprehensive information about therapeutic properties.</p>
+                    
+                    <div class="features">
+                        <div class="feature">
+                            <i class="fas fa-accuracy"></i>
+                            <h4>High Accuracy</h4>
+                            <p>Advanced neural network architecture for precise classification</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-book-medical"></i>
+                            <h4>Detailed Information</h4>
+                            <p>Comprehensive medicinal uses and therapeutic properties</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-mobile-alt"></i>
+                            <h4>Easy to Use</h4>
+                            <p>Simple interface accessible on all devices</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="about-stats">
+                    <div class="stat">
+                        <div class="stat-number">10</div>
+                        <div class="stat-label">Plant Species</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">95%</div>
+                        <div class="stat-label">Accuracy</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">Medicinal Uses</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="logo">
+                        <i class="fas fa-leaf"></i>
+                        <h3>MediLeaf AI</h3>
+                    </div>
+                    <p>Bridging traditional knowledge with modern AI technology for better health outcomes.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#classifier">Classifier</a></li>
+                        <li><a href="#plants">Plants</a></li>
+                        <li><a href="#about">About</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> info@medileaf.ai</li>
+                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-map-marker-alt"></i> San Francisco, CA</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 MediLeaf AI. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Plant Info Modal -->
+    <div id="plantModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalPlantName"></h2>
+            <div class="modal-uses">
+                <h3><i class="fas fa-pills"></i> Medicinal Uses</h3>
+                <ul id="modalUsesList"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
