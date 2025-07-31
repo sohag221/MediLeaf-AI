@@ -20,10 +20,31 @@ const plantModal = document.getElementById('plantModal');
 const modalPlantName = document.getElementById('modalPlantName');
 const modalUsesList = document.getElementById('modalUsesList');
 const closeModal = document.querySelector('.close');
+const featureCards = document.querySelectorAll('.floating-card');
+const featureModal = document.getElementById('featureModal');
+const featureModalTitle = document.getElementById('featureModalTitle');
+const featureModalContent = document.getElementById('featureModalContent');
+const closeFeatureModal = document.querySelector('.close-feature');
 const navLinks = document.querySelectorAll('.nav-link');
 
 // Global variable to store selected file
 let selectedFile = null;
+
+// Feature scripts data
+const featureScripts = {
+    'ai-powered': {
+        title: 'AI-Powered Technology',
+        content: 'Our model is powered by a state-of-the-art deep learning algorithm trained on over 10,000 medicinal leaf images. It accurately identifies each plant species, ensuring fast and reliable results for researchers, herbalists, and nature enthusiasts. Just scan a leaf, and let the AI do the rest!'
+    },
+    'plant-types': {
+        title: '10 Plant Types Database',
+        content: 'Explore a comprehensive database of 10 powerful medicinal plants, including Neem Tree, Holy Basil, Gotu Kola, and more. Each plant entry is supported with high-resolution samples and precise classification, making it easy to learn and compare.'
+    },
+    'medicinal-uses': {
+        title: 'Medicinal Uses & Benefits',
+        content: 'Discover the natural healing properties of each plant. From boosting immunity to reducing inflammation, we provide detailed therapeutic information backed by traditional and modern sources. Perfect for health-conscious users looking for natural remedies.'
+    }
+};
 
 // Smooth scrolling for navigation
 navLinks.forEach(link => {
@@ -252,6 +273,23 @@ plantCards.forEach(card => {
     });
 });
 
+// Feature card modal functionality
+featureCards.forEach(card => {
+    card.addEventListener('click', () => {
+        const featureType = card.getAttribute('data-feature');
+        showFeatureModal(featureType);
+    });
+});
+
+function showFeatureModal(featureType) {
+    const feature = featureScripts[featureType];
+    if (feature) {
+        featureModalTitle.textContent = feature.title;
+        featureModalContent.textContent = feature.content;
+        featureModal.style.display = 'block';
+    }
+}
+
 function showPlantModal(plantName) {
     fetch(`/plant_info/${encodeURIComponent(plantName)}`)
     .then(response => response.json())
@@ -282,9 +320,17 @@ closeModal.addEventListener('click', () => {
     plantModal.style.display = 'none';
 });
 
+// Close feature modal
+closeFeatureModal.addEventListener('click', () => {
+    featureModal.style.display = 'none';
+});
+
 window.addEventListener('click', (e) => {
     if (e.target === plantModal) {
         plantModal.style.display = 'none';
+    }
+    if (e.target === featureModal) {
+        featureModal.style.display = 'none';
     }
 });
 
@@ -363,8 +409,13 @@ loadingObserver.observe(loading, { attributes: true });
 
 // Keyboard navigation for accessibility
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && plantModal.style.display === 'block') {
-        plantModal.style.display = 'none';
+    if (e.key === 'Escape') {
+        if (plantModal.style.display === 'block') {
+            plantModal.style.display = 'none';
+        }
+        if (featureModal.style.display === 'block') {
+            featureModal.style.display = 'none';
+        }
     }
 });
 
