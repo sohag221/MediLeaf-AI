@@ -1,6 +1,12 @@
 // DOM Elements
 const uploadArea = document.getElementById('uploadArea');
 const imageInput = document.getElementById('imageInput');
+const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+const previewImage = document.getElementById('previewImage');
+const imageFileName = document.getElementById('imageFileName');
+const imageFileSize = document.getElementById('imageFileSize');
+const processBtn = document.getElementById('processBtn');
+const cancelBtn = document.getElementById('cancelBtn');
 const predictionContainer = document.getElementById('predictionContainer');
 const loading = document.getElementById('loading');
 const uploadedImage = document.getElementById('uploadedImage');
@@ -15,6 +21,9 @@ const modalPlantName = document.getElementById('modalPlantName');
 const modalUsesList = document.getElementById('modalUsesList');
 const closeModal = document.querySelector('.close');
 const navLinks = document.querySelectorAll('.nav-link');
+
+// Global variable to store selected file
+let selectedFile = null;
 
 // Smooth scrolling for navigation
 navLinks.forEach(link => {
@@ -77,18 +86,18 @@ uploadArea.addEventListener('drop', (e) => {
     
     const files = e.dataTransfer.files;
     if (files.length > 0) {
-        handleFileUpload(files[0]);
+        handleFileSelection(files[0]);
     }
 });
 
 imageInput.addEventListener('change', (e) => {
     if (e.target.files.length > 0) {
-        handleFileUpload(e.target.files[0]);
+        handleFileSelection(e.target.files[0]);
     }
 });
 
-// Handle file upload and prediction
-function handleFileUpload(file) {
+// Handle file selection (show preview, don't process yet)
+function handleFileSelection(file) {
     // Validate file type
     if (!file.type.startsWith('image/')) {
         alert('Please select a valid image file.');
@@ -101,12 +110,52 @@ function handleFileUpload(file) {
         return;
     }
     
+    selectedFile = file;
+    
+    // Show image preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        previewImage.src = e.target.result;
+        imageFileName.textContent = `File: ${file.name}`;
+        imageFileSize.textContent = `Size: ${formatFileSize(file.size)}`;
+        
+        // Hide upload area and show preview
+        uploadArea.style.display = 'none';
+        imagePreviewContainer.style.display = 'block';
+        predictionContainer.style.display = 'none';
+        loading.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+}
+
+// Format file size for display
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// Process button click handler
+processBtn.addEventListener('click', () => {
+    if (selectedFile) {
+        processImage(selectedFile);
+    }
+});
+
+// Cancel button click handler
+cancelBtn.addEventListener('click', () => {
+    resetToUploadState();
+});
+
+// Process the selected image
+function processImage(file) {
     // Show loading
-    uploadArea.style.display = 'none';
-    predictionContainer.style.display = 'none';
+    imagePreviewContainer.style.display = 'none';
     loading.style.display = 'block';
     
-    // Display uploaded image
+    // Display uploaded image in results
     const reader = new FileReader();
     reader.onload = (e) => {
         uploadedImage.src = e.target.result;
@@ -130,15 +179,25 @@ function handleFileUpload(file) {
             displayPredictionResults(data);
         } else {
             alert('Error: ' + (data.error || 'Failed to predict image'));
-            resetClassifier();
+            resetToUploadState();
         }
     })
     .catch(error => {
         console.error('Error:', error);
         loading.style.display = 'none';
         alert('Network error. Please try again.');
-        resetClassifier();
+        resetToUploadState();
     });
+}
+
+// Reset to initial upload state
+function resetToUploadState() {
+    uploadArea.style.display = 'block';
+    imagePreviewContainer.style.display = 'none';
+    predictionContainer.style.display = 'none';
+    loading.style.display = 'none';
+    selectedFile = null;
+    imageInput.value = '';
 }
 
 // Display prediction results
@@ -182,10 +241,7 @@ function displayPredictionResults(data) {
 
 // Reset classifier
 function resetClassifier() {
-    uploadArea.style.display = 'block';
-    predictionContainer.style.display = 'none';
-    loading.style.display = 'none';
-    imageInput.value = '';
+    resetToUploadState();
 }
 
 // Plant card modal functionality

@@ -247,6 +247,96 @@ body {
     box-shadow: 0 4px 20px rgba(76, 124, 89, 0.3);
 }
 
+/* Image Preview Container */
+.image-preview-container {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    margin-top: 2rem;
+    border: 2px solid #e8f5e8;
+}
+
+.preview-image {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.preview-image img {
+    max-width: 400px;
+    max-height: 400px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    object-fit: cover;
+}
+
+.image-info {
+    margin-top: 1rem;
+    color: #666;
+}
+
+.image-info p {
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+}
+
+.preview-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.process-btn {
+    background: linear-gradient(135deg, #4a7c59, #2c5530);
+    color: white;
+    border: none;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 20px rgba(76, 124, 89, 0.3);
+}
+
+.process-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 30px rgba(76, 124, 89, 0.4);
+    background: linear-gradient(135deg, #5a8c69, #3c6540);
+}
+
+.process-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.cancel-btn {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 20px rgba(231, 76, 60, 0.3);
+}
+
+.cancel-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 30px rgba(231, 76, 60, 0.4);
+    background: linear-gradient(135deg, #f75c4c, #d0493b);
+}
+
 /* Prediction Results */
 .prediction-container {
     background: white;
@@ -689,6 +779,22 @@ body {
     .uploaded-image img {
         max-width: 250px;
         max-height: 250px;
+    }
+    
+    .preview-image img {
+        max-width: 300px;
+        max-height: 300px;
+    }
+    
+    .preview-actions {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .process-btn,
+    .cancel-btn {
+        width: 100%;
+        justify-content: center;
     }
 }
 
