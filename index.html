@@ -318,6 +318,45 @@
         </div>
     </div>
 
-    <script src="static/js/script.js"></script>
+    <script>
+        // Smart script loader - detects if Flask backend is available
+        async function loadAppropriateScript() {
+            try {
+                // Test if Flask backend is available by making a simple request
+                const response = await fetch('/test', {
+                    method: 'HEAD',
+                    cache: 'no-cache'
+                });
+                
+                // If Flask is available, load the full script
+                if (response.ok || response.status === 404) {
+                    // 404 is okay - means Flask is running but route doesn't exist
+                    console.log('🌿 Flask backend detected - Loading full AI functionality');
+                    loadScript('static/js/script.js');
+                } else {
+                    throw new Error('Flask not available');
+                }
+            } catch (error) {
+                // If Flask is not available, load demo script
+                console.log('🌿 Static hosting detected - Loading demo functionality');
+                loadScript('static/js/script-demo.js');
+            }
+        }
+        
+        function loadScript(src) {
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = () => console.log(`✅ Script loaded: ${src}`);
+            script.onerror = () => console.error(`❌ Failed to load: ${src}`);
+            document.head.appendChild(script);
+        }
+        
+        // Load appropriate script when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadAppropriateScript);
+        } else {
+            loadAppropriateScript();
+        }
+    </script>
 </body>
 </html>
