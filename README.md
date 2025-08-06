@@ -1,20 +1,25 @@
-# MediLeaf AI - Medicinal Plant Classifier
+# 🌿 MediLeaf AI - Medicinal Plant Classifier
 
 ![MediLeaf AI](https://img.shields.io/badge/MediLeaf-AI-green)
 ![Python](https://img.shields.io/badge/Python-3.8+-blue)
 ![Flask](https://img.shields.io/badge/Flask-2.3+-red)
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-orange)
 
-A sophisticated web application that uses deep learning to identify medicinal plants from leaf images and provides detailed information about their therapeutic properties.
+An AI-powered web application that identifies medicinal plants from leaf images using deep learning.
 
-## 🌿 Features
+## 🌐 Live Demo
+**Visit the live demo:** [https://sohag221.github.io/Medicinal/](https://sohag221.github.io/Medicinal/)
 
-- **AI-Powered Classification**: Uses EfficientNetB3 deep learning model for accurate plant identification
-- **10 Medicinal Plants**: Supports classification of 10 different medicinal plant species
-- **Detailed Medical Information**: Provides comprehensive medicinal uses for each identified plant
-- **Modern UI/UX**: Responsive, mobile-friendly design with smooth animations
-- **Real-time Predictions**: Instant classification with confidence scores
-- **Plant Database**: Interactive plant information cards with detailed descriptions
+*Note: The GitHub Pages version is a static demo. For full AI functionality, please run the Flask application locally.*
+
+## ✨ Features
+
+- **AI-Powered Classification**: EfficientNetB3 model trained on 10,000+ medicinal plant images
+- **10 Plant Species**: Comprehensive database of medicinal plants
+- **99% Accuracy**: High-precision plant identification
+- **Medicinal Uses**: Detailed therapeutic information for each plant
+- **Responsive Design**: Works on desktop, tablet, and mobile devices
+- **Interactive UI**: Modern, user-friendly interface
 
 ## 🎯 Supported Plants
 

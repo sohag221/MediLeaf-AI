@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medicinal Plant Classifier</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="static/css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -66,6 +66,9 @@
             <div class="section-header">
                 <h2>Plant Leaf Classifier</h2>
                 <p>Upload an image of a medicinal plant leaf for instant identification</p>
+                <div class="demo-notice">
+                    <p><i class="fas fa-info-circle"></i> <strong>Demo Mode:</strong> This is a static demo. For full AI functionality, visit our <a href="https://github.com/sohag221/Medicinal" target="_blank">GitHub repository</a> to run the Flask application locally.</p>
+                </div>
             </div>
             
             <div class="classifier-container">
@@ -280,11 +283,12 @@
                 </div>
                 
                 <div class="footer-section">
-                    <h4>Contact</h4>
+                    <h4>Contact & Repository</h4>
                     <ul>
                         <li><i class="fas fa-envelope"></i> mdratulsohag1234@gmail.com</li>
                         <li><i class="fas fa-phone"></i> (+880) 1877172378</li>
                         <li><i class="fas fa-map-marker-alt"></i> Dhaka, Bangladesh</li>
+                        <li><i class="fab fa-github"></i> <a href="https://github.com/sohag221/Medicinal" target="_blank">GitHub Repository</a></li>
                     </ul>
                 </div>
             </div>
@@ -317,7 +321,7 @@
             </div>
         </div>
     </div>
-    
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    <script src="static/js/script-static.js"></script>
 </body>
 </html>
