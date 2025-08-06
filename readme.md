@@ -7,10 +7,6 @@
 
 An AI-powered web application that identifies medicinal plants from leaf images using deep learning.
 
-## 🌐 Live Demo
-**Visit the live demo:** [https://sohag221.github.io/Medicinal/](https://sohag221.github.io/Medicinal/)
-
-*Note: The GitHub Pages version is a static demo. For full AI functionality, please run the Flask application locally.*
 
 ## ✨ Features
 
