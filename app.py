@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 import torch
 import torch.nn as nn
 import torchvision.transforms as transforms
@@ -210,7 +210,7 @@ def predict_image(image):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return send_from_directory('.', 'index.html')
 
 @app.route('/predict', methods=['POST'])
 def predict():
