@@ -158,7 +158,7 @@ function simulateAIPrediction() {
 
 // Initialize the application
 function initializeApp() {
-    console.log('Initializing MediLeaf AI Demo application');
+    console.log('🌿 Initializing MediLeaf AI Demo application');
     
     // Show demo notice
     showDemoNotice();
@@ -175,7 +175,13 @@ function initializeApp() {
         imageInput.setAttribute('accept', 'image/*');
     }
     
-    console.log('Demo application initialized successfully');
+    console.log('✅ Demo application initialized successfully');
+    
+    // Add demo indicator to title
+    const title = document.querySelector('title');
+    if (title && !title.textContent.includes('Demo')) {
+        title.textContent = 'MediLeaf AI - Demo Mode';
+    }
 }
 
 // Show demo notice
@@ -185,7 +191,7 @@ function showDemoNotice() {
         const demoNotice = document.createElement('div');
         demoNotice.className = 'demo-notice';
         demoNotice.innerHTML = `
-            <p><i class="fas fa-info-circle"></i> <strong>Demo Mode:</strong> This is a static demo with simulated AI predictions. For full AI functionality, run the Flask application locally or visit our <a href="https://github.com/sohag221/Medicinal" target="_blank">GitHub repository</a>.</p>
+            <p><i class="fas fa-info-circle"></i> <strong>Demo Mode:</strong> This is a static demo with simulated AI predictions. For full AI functionality with real plant identification, visit our <a href="https://github.com/sohag221/Medicinal" target="_blank">GitHub repository</a> to run locally.</p>
         `;
         sectionHeader.appendChild(demoNotice);
     }
@@ -361,31 +367,50 @@ cancelBtn.addEventListener('click', () => {
 
 // Process the selected image (DEMO VERSION - simulates AI prediction)
 function processImageDemo(file) {
-    console.log('Processing image in demo mode...');
+    console.log('🎭 Processing image in demo mode...');
     
-    // Show loading
-    imagePreviewContainer.style.display = 'none';
-    loading.style.display = 'block';
-    
-    // Display uploaded image in results
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        uploadedImage.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-    
-    // Simulate processing delay (1.5-3 seconds)
-    const processingTime = Math.random() * 1500 + 1500;
-    
-    setTimeout(() => {
-        loading.style.display = 'none';
+    try {
+        // Show loading
+        imagePreviewContainer.style.display = 'none';
+        loading.style.display = 'block';
         
-        // Generate simulated prediction
-        const demoData = simulateAIPrediction();
-        displayPredictionResults(demoData);
+        // Display uploaded image in results
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            uploadedImage.src = e.target.result;
+        };
+        reader.onerror = (e) => {
+            console.error('Error reading file in demo mode:', e);
+            alert('Error processing image. Please try again.');
+            resetToUploadState();
+            return;
+        };
+        reader.readAsDataURL(file);
         
-        console.log('Demo prediction completed:', demoData);
-    }, processingTime);
+        // Simulate processing delay (1.5-3 seconds)
+        const processingTime = Math.random() * 1500 + 1500;
+        
+        setTimeout(() => {
+            try {
+                loading.style.display = 'none';
+                
+                // Generate simulated prediction
+                const demoData = simulateAIPrediction();
+                displayPredictionResults(demoData);
+                
+                console.log('✅ Demo prediction completed:', demoData);
+            } catch (error) {
+                console.error('Error in demo prediction:', error);
+                alert('Demo processing failed. Please try again.');
+                resetToUploadState();
+            }
+        }, processingTime);
+        
+    } catch (error) {
+        console.error('Error in processImageDemo:', error);
+        alert('Demo mode error. Please refresh and try again.');
+        resetToUploadState();
+    }
 }
 
 // Reset to initial upload state (same as original)
@@ -642,3 +667,20 @@ function getCurrentSection() {
 }
 
 console.log('🌿 MediLeaf AI Demo Mode Loaded - Simulated predictions active!');
+
+// Global error handler for demo mode
+window.addEventListener('error', function(e) {
+    console.error('Demo mode error caught:', e.error);
+    // Don't show alert for every error, just log it
+});
+
+// Prevent any accidental network requests in demo mode
+const originalFetch = window.fetch;
+window.fetch = function(...args) {
+    const url = args[0];
+    if (typeof url === 'string' && (url.startsWith('/') || url.includes('/predict') || url.includes('/plant_info'))) {
+        console.warn('🚫 Blocked network request in demo mode:', url);
+        return Promise.reject(new Error('Network requests disabled in demo mode'));
+    }
+    return originalFetch.apply(this, args);
+};

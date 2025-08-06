@@ -319,26 +319,68 @@
     </div>
 
     <script>
-        // Smart script loader - detects if Flask backend is available
-        async function loadAppropriateScript() {
+        // Smart script loader - detects hosting environment without making requests
+        function loadAppropriateScript() {
+            const hostname = window.location.hostname;
+            const port = window.location.port;
+            const protocol = window.location.protocol;
+            
+            // Detect static hosting platforms
+            const isStaticHosting = (
+                hostname.includes('github.io') ||           // GitHub Pages
+                hostname.includes('vercel.app') ||          // Vercel
+                hostname.includes('netlify.app') ||         // Netlify
+                hostname.includes('surge.sh') ||            // Surge
+                hostname.includes('firebase.app') ||        // Firebase Hosting
+                hostname.includes('web.app') ||             // Firebase web.app
+                hostname.includes('pages.dev') ||           // Cloudflare Pages
+                (protocol === 'file:') ||                   // Local file
+                (hostname === 'localhost' && !port) ||     // Static localhost
+                (hostname === '127.0.0.1' && !port)        // Static localhost IP
+            );
+            
+            // Detect Flask development server
+            const isFlaskServer = (
+                (hostname === 'localhost' && port === '5000') ||
+                (hostname === '127.0.0.1' && port === '5000') ||
+                (port === '5000') ||                        // Any port 5000
+                hostname.includes('herokuapp.com') ||       // Heroku
+                hostname.includes('railway.app') ||         // Railway
+                hostname.includes('pythonanywhere.com')     // PythonAnywhere
+            );
+            
+            if (isStaticHosting) {
+                console.log('🌿 Static hosting detected:', hostname);
+                console.log('📦 Loading demo functionality...');
+                loadScript('static/js/script-demo.js');
+            } else if (isFlaskServer) {
+                console.log('🌿 Flask server detected:', hostname + ':' + port);
+                console.log('🤖 Loading full AI functionality...');
+                loadScript('static/js/script.js');
+            } else {
+                // Default fallback - try Flask first, then demo
+                console.log('🌿 Unknown environment, testing Flask availability...');
+                testFlaskAvailability();
+            }
+        }
+        
+        // Fallback method for unknown environments
+        async function testFlaskAvailability() {
             try {
-                // Test if Flask backend is available by making a simple request
-                const response = await fetch('/test', {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 1000); // 1 second timeout
+                
+                const response = await fetch(window.location.origin + '/favicon.ico', {
                     method: 'HEAD',
+                    signal: controller.signal,
                     cache: 'no-cache'
                 });
                 
-                // If Flask is available, load the full script
-                if (response.ok || response.status === 404) {
-                    // 404 is okay - means Flask is running but route doesn't exist
-                    console.log('🌿 Flask backend detected - Loading full AI functionality');
-                    loadScript('static/js/script.js');
-                } else {
-                    throw new Error('Flask not available');
-                }
+                clearTimeout(timeoutId);
+                console.log('🤖 Flask response detected - Loading full AI functionality');
+                loadScript('static/js/script.js');
             } catch (error) {
-                // If Flask is not available, load demo script
-                console.log('🌿 Static hosting detected - Loading demo functionality');
+                console.log('📦 No Flask detected - Loading demo functionality');
                 loadScript('static/js/script-demo.js');
             }
         }
@@ -347,7 +389,16 @@
             const script = document.createElement('script');
             script.src = src;
             script.onload = () => console.log(`✅ Script loaded: ${src}`);
-            script.onerror = () => console.error(`❌ Failed to load: ${src}`);
+            script.onerror = () => {
+                console.error(`❌ Failed to load: ${src}`);
+                // Fallback: if main script fails, try the other one
+                const fallbackSrc = src.includes('script.js') ? 'static/js/script-demo.js' : 'static/js/script.js';
+                console.log(`🔄 Trying fallback: ${fallbackSrc}`);
+                const fallbackScript = document.createElement('script');
+                fallbackScript.src = fallbackSrc;
+                fallbackScript.onload = () => console.log(`✅ Fallback script loaded: ${fallbackSrc}`);
+                document.head.appendChild(fallbackScript);
+            };
             document.head.appendChild(script);
         }
         
